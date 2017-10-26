@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Logo CVAM</title>
+    <script>
+        function getPAD(pts1, pts2, r, fp) {
+            totalDistance = Math.sqrt(Math.pow((pts2.x - pts1.x), 2) + Math.pow((pts2.y - pts1.y), 2));
+            rap = fp ? r / totalDistance : (totalDistance - r) / totalDistance;
+            return {x:pts1.x+(rap*(pts2.x-pts1.x)),y:pts1.y+(rap*(pts2.y-pts1.y))};
+        }
+        function drawLineRounded(canvas, points, radius) {
+            canvas.beginPath();
+            canvas.moveTo(points[0].x,points[0].y);
+            for (i=1;(i+1)<points.length;i++) {
+                tpts = getPAD(points[i-1],points[i],radius,false);
+                canvas.lineTo(tpts.x,tpts.y);
+                tpts = getPAD(points[i],points[i+1],radius,true);
+                canvas.arcTo(points[i].x,points[i].y,tpts.x,tpts.y,radius);
+            }
+            canvas.lineTo(points[points.length-1].x,points[points.length-1].y)
+            canvas.stroke();
+        }
+        function drawLogo(palette,idpng) {
+            var cvs = document.getElementById('cvam');
+            var scale = 0.6;
+            cvs.height=(800+130)*scale;
+            cvs.width=802*scale;
+            var centerX = cvs.width / 2;
+            var centerY = cvs.height / 2 + 130*scale/2-1*scale;
+            var ctx = cvs.getContext('2d');
+            
+            ctx.lineWidth = 100*scale;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = palette[0];
+            ctx.fillStyle = palette[0];
+
+            ctx.beginPath();
+            ctx.moveTo(centerX+Math.cos(Math.PI/36*60)*350*scale,centerY+Math.sin(Math.PI/36*60)*350*scale);
+            ctx.lineTo(centerX+Math.cos(Math.PI/36*60)*350*scale,centerY+Math.sin(Math.PI/36*60)*350*scale-175*scale);
+            ctx.lineTo(centerX+Math.cos(Math.PI/36*60)*350*scale+60*scale,centerY+Math.sin(Math.PI/36*60)*350*scale-175*scale);
+            ctx.stroke();            
+
+            ctx.beginPath();
+            ctx.moveTo(centerX+Math.cos(Math.PI/36*48)*350*scale,centerY+Math.sin(Math.PI/36*48)*350*scale);
+            ctx.lineTo(centerX+Math.cos(Math.PI/36*48)*350*scale,centerY+Math.sin(Math.PI/36*48)*350*scale-175*scale);
+            ctx.lineTo(centerX+Math.cos(Math.PI/36*48)*350*scale-60*scale,centerY+Math.sin(Math.PI/36*48)*350*scale-175*scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 350*scale, Math.PI/36*60, Math.PI/36*48,false);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50    *scale, Math.PI/36*0, Math.PI/36*72,false);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX+Math.cos(Math.PI/36*52.7)*355*scale,centerY+Math.sin(Math.PI/36*52.7)*355*scale,55*scale,0,2*Math.PI,false);
+            ctx.fillStyle = palette[2];
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(centerX+Math.cos(Math.PI/36*55.5)*430*scale,centerY+Math.sin(Math.PI/36*55.5)*430*scale,40*scale,0,2*Math.PI,false);
+            ctx.fillStyle = palette[3];
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(centerX+Math.cos(Math.PI/36*54)*498*scale,centerY+Math.sin(Math.PI/36*54)*498*scale,30*scale,0,2*Math.PI,false);
+            ctx.fillStyle = palette[4];
+            ctx.fill();
+
+            ctx.strokeStyle = palette[1];
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 200*scale, Math.PI/36*6, -Math.PI/36*6,false);
+            ctx.stroke();
+
+            var split = 2/10;
+            ctx.lineWidth = 25*scale;
+            ctx.globalCompositeOperation = "destination-out";
+            for(i=2;i<6;i++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*360*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*360*scale);
+                ctx.lineTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*360*scale+(50+10*Math.abs(5-i))*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*360*scale);
+                ctx.strokeStyle = palette[0];
+                ctx.stroke();
+            }
+
+            ctx.lineWidth = 25*scale;
+            pts = [{x:centerX-110*scale,y:centerY},
+                   {x:centerX-60*scale,y:centerY},
+                   {x:centerX-25*scale,y:centerY+40*scale},
+                   {x:centerX+25*scale,y:centerY-40*scale},
+                   {x:centerX+60*scale,y:centerY},
+                   {x:centerX+110*scale,y:centerY}];
+            drawLineRounded(ctx,pts,1*scale);
+
+            var div = document.getElementById(idpng);
+            var img = cvs.toDataURL("image/png");
+            div.innerHTML = div.innerHTML+'<img src="'+img+'"/>';
+        }
+    </script>
+</head>
+<body>
+    <canvas id="cvam" style="display:none"></canvas>
+    <div id="png1" style="background-color: #CFD8DC;padding:10em;float:left"></div>
+    <div id="png2" style="background-color: #212121;padding:10em;float:left"></div>
+    <script>
+        drawLogo(["#212121","#1976D2","#C2185B","#303F9F","#FFC107"],"png1");
+        drawLogo(["#CFD8DC","#1976D2","#C2185B","#303F9F","#FFC107"],"png2");
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Logo CVAM</title>
+    <style>
+        #cvam {
+            padding: 0;
+            margin: auto;
+            display: block;
+            width: 800px;
+            height: 800px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+    <script>
+        function hex_corner(center, size, i) {
+            var angle_deg = 60 * i + 30 ;
+            var angle_rad = -Math.PI / 180 * angle_deg;
+            return {
+                x: center.x + size * Math.cos(angle_rad),
+                y: center.y + size * Math.sin(angle_rad)
+            }
+        }
+        function drawShape(canvas, points, color) {
+            if (points.length > 2) {
+                canvas.fillStyle = color;
+                canvas.beginPath();
+                canvas.moveTo(points[0].x,points[0].y);
+                for (i=1;i<points.length;i++) {
+                    canvas.lineTo(points[i].x,points[i].y)
+                }
+                canvas.fill();
+            }
+        }
+        function drawLine(canvas, points, color, width) {
+            if (points.length > 1) {
+                canvas.strokeStyle = color;
+                canvas.lineWidth = width;
+                canvas.beginPath();
+                canvas.moveTo(points[0].x,points[0].y);
+                for (i=1;i<points.length;i++) {
+                    canvas.lineTo(points[i].x,points[i].y)
+                }
+                canvas.lineTo(points[0].x,points[0].y);
+                canvas.lineTo(points[1].x,points[1].y);
+                canvas.stroke();
+            }
+        }
+        function drawCircle(canvas, center, color, radius) {
+            canvas.beginPath();
+            canvas.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+            canvas.fillStyle = color;
+            canvas.fill();          
+        }
+        function strokeCircle(canvas, center, color, radius, width) {
+            canvas.beginPath();
+            canvas.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+            canvas.lineWidth = width;
+            canvas.strokeStyle = color;
+            canvas.stroke(); 
+        }
+        function drawSperm(canvas, point, direction, width, distance, size, colors) {
+            var line = [point,hex_corner(point,distance,direction)];
+            drawLine(canvas,line,colors[4],width);
+            drawCircle(canvas,hex_corner(point,distance,direction),colors[4],size*0.15);
+            var line = [hex_corner(point,distance*0.1,(direction+3) % 6),hex_corner(point,distance,direction)];
+            drawLine(canvas,line,colors[0],width*0.4);
+            drawCircle(canvas,hex_corner(point,distance,direction),colors[0],size*0.12);
+        }
+        function drawLogo() {
+            var cvs = document.getElementById('cvam');
+            cvs.height=1000;
+            cvs.width=1000;
+            var ctx = cvs.getContext('2d');
+            var transX = cvs.width * 0.5, transY = cvs.height * 0.35;
+            ctx.translate(transX, transY);
+            var size = cvs.height * 0.16;
+            var palette = ["#FFFFFF","#E1315B","#008DCB","#FFEC5C","#080706","#ef98ac","#65d0ff","#fff5ad"];
+            var pts = [{x:0, y:0}];
+            var ptsu = [{x:0, y:size}]
+            var ptsd = [{x:0, y:-size}]
+            // Get a bunch of points to draw shape later
+            for (i=0;i<2;i++) {
+                for (j=0;j<6;j++) {
+                    pts.push(hex_corner(pts[0],size*(i+1),j));
+                    ptsu.push(hex_corner(ptsu[0],size*(i+1),j));
+                    ptsd.push(hex_corner(ptsd[0],size*(i+1),j));
+                }
+            }
+
+
+            // Outer cube
+            var shape1 = [pts[0],pts[7],pts[8],pts[9]];
+            drawShape(ctx,shape1,palette[1]);
+            var shape2 = [pts[0],pts[9],pts[10],pts[11]];
+            drawShape(ctx,shape2,palette[2]);
+            var shape3 = [pts[0],pts[11],pts[12],pts[7]];
+            drawShape(ctx,shape3,palette[3]);
+            
+            // Exterior lines
+            lw = size * 0.04;
+            var line = [pts[7],pts[8],pts[9],pts[10],pts[11],pts[12],pts[7],pts[8]];
+            drawLine(ctx,line,palette[0],lw*1.5);
+            var line = [pts[7],pts[8],pts[9],pts[10],pts[11],pts[12],pts[7],pts[8]];
+            drawLine(ctx,line,palette[4],lw);
+
+            // Intruding lines 
+            lw = size*0.10;
+            ld = size*0.5;
+
+            drawSperm(ctx, pts[7], 3, lw, ld*2, size, palette);
+            drawSperm(ctx, pts[8], 4, lw, ld, size, palette);
+            drawSperm(ctx, pts[9], 5, lw, ld*2, size, palette);
+            drawSperm(ctx, pts[10], 0, lw, ld, size, palette);
+            drawSperm(ctx, pts[11], 1, lw, ld*2, size, palette);
+            drawSperm(ctx, pts[12], 2, lw, ld, size, palette);
+
+            // Inner cube
+            var shape1 = [pts[0],pts[1],pts[2],pts[3]];
+            drawShape(ctx,shape1,palette[5]);
+            var shape2 = [pts[0],pts[3],pts[4],pts[5]];
+            drawShape(ctx,shape2,palette[6]);
+            var shape3 = [pts[0],pts[5],pts[6],pts[1]];
+            drawShape(ctx,shape3,palette[7]);
+
+            // Inner black line
+            lw = size * 0.03;
+            var line = [pts[0],pts[1]];
+            drawLine(ctx,line,palette[4],lw);
+            var line = [pts[0],pts[3]];
+            drawLine(ctx,line,palette[4],lw);
+            var line = [pts[0],pts[5]];
+            drawLine(ctx,line,palette[4],lw);
+            var line = [pts[1],pts[2],pts[3],pts[4],pts[5],pts[6],pts[1],pts[2]];
+            drawLine(ctx,line,palette[4],lw);
+
+            // Label
+            var line7 = [{x:pts[9].x,y:pts[11].y+size*0.2},{x:pts[7].x,y:pts[11].y+size*0.2}];
+            drawLine(ctx,line7,palette[4],lw);
+            ctx.fillStyle = palette[4] 
+            ctx.font = "700 4.6em Calibri";
+            ctx.textAlign = "center";
+            ctx.fillText("CENTRE VIRTUEL",pts[11].x,pts[11].y+size*0.6)
+            ctx.fillText("D'ANALYTIQUE",pts[11].x,pts[11].y+size*1.05)
+            ctx.fillText("ET MODÉLISATION",pts[11].x,pts[11].y+size*1.5)
+            var line8 = [{x:pts[9].x,y:pts[11].y+size*1.6},{x:pts[7].x,y:pts[11].y+size*1.6}];
+            drawLine(ctx,line8,palette[4],lw);            
+        }
+    </script>
+</head>
+<body>
+    <canvas id="cvam"></canvas>
+    <script>drawLogo();</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Logo CVAM</title>
+    <script>
+        function drawLogo() {
+            var cvs = document.getElementById('cvam');
+            var scale = 1;
+            cvs.height=1200*scale;
+            cvs.width=1200*scale;
+            var centerX = cvs.width / 2;
+            var centerY = cvs.height / 2;
+            var ctx = cvs.getContext('2d');
+
+            //var palette = ["#FFFFFF","#78DDFB","#00BFF6","#009CF1","#0374C4","#1459A6","#000000"];
+            var palette = ["#FFFFFF","#78DDFB","#16a085","#f1c40f","#2980b9","#e74c3c","#000000"];
+            
+            ctx.lineWidth = 100*scale;
+            ctx.lineCap = "round";
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 500*scale, Math.PI/36*56.5, Math.PI/36*51.5,false);
+            ctx.strokeStyle = palette[2];
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 350*scale, Math.PI/36*32, Math.PI/36*26,false);
+            ctx.strokeStyle = palette[3];
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 200*scale, Math.PI*5/36, -Math.PI*5/36,false);
+            ctx.strokeStyle = palette[4];
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50*scale, 0, 2*Math.PI,false);
+            ctx.strokeStyle = palette[5];
+            ctx.stroke();
+
+            var div = document.getElementById('png');
+            var img = cvs.toDataURL("image/png");
+            div.innerHTML = div.innerHTML+'<img src="'+img+'"/>';
+        }
+    </script>
+</head>
+<body>
+    <h3>Canvas</h3>
+    <canvas id="cvam"></canvas>
+    <h3>Image png</h3>
+    <div id="png"></div>
+    <script>
+        drawLogo();
+    </script>
+</body>
+</html>

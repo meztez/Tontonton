@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Logo CVAM</title>
+    <script>
+        function hc(center, size, i) {
+            var angle_deg = 60 * i;
+            var angle_rad = -Math.PI / 180 * angle_deg;
+            return {
+                x: center.x + size * Math.cos(angle_rad),
+                y: center.y + size * Math.sin(angle_rad)
+            }
+        }
+        function drawShape(canvas, points, color) {
+            if (points.length > 2) {
+                canvas.fillStyle = color;
+                canvas.beginPath();
+                canvas.moveTo(points[0].x,points[0].y);
+                for (i=1;i<points.length;i++) {
+                    canvas.lineTo(points[i].x,points[i].y)
+                }
+                canvas.fill();
+            }
+        }
+        function getPAD(pts1, pts2, r, fp) {
+            totalDistance = Math.sqrt(Math.pow((pts2.x - pts1.x), 2) + Math.pow((pts2.y - pts1.y), 2));
+            rap = fp ? r / totalDistance : (totalDistance - r) / totalDistance;
+            return {x:pts1.x+(rap*(pts2.x-pts1.x)),y:pts1.y+(rap*(pts2.y-pts1.y))};
+        }
+        function drawShapeRounded(canvas, points, color, radius) {
+            if (points.length > 2) {
+                canvas.fillStyle = color;
+                canvas.beginPath();
+                tpts = getPAD(points[0],points[1],radius,true);
+                canvas.moveTo(tpts.x,tpts.y);
+                for (i=1;i<=points.length;i++) {
+                    tpts = getPAD(points[i-1],points[i % points.length],radius,false);
+                    canvas.lineTo(tpts.x,tpts.y);
+                    tpts = getPAD(points[i % points.length],points[(i+1) % points.length],radius,false);
+                    canvas.arcTo(points[i % points.length].x,points[i % points.length].y,tpts.x,tpts.y,radius);
+                }
+                canvas.fill();
+            }
+        }
+        function drawLine(canvas, points, color, width) {
+            if (points.length > 1) {
+                canvas.strokeStyle = color;
+                canvas.lineWidth = width;
+                canvas.beginPath();
+                canvas.moveTo(points[0].x,points[0].y);
+                for (i=1;i<points.length;i++) {
+                    canvas.lineTo(points[i].x,points[i].y)
+                }
+                canvas.lineTo(points[0].x,points[0].y);
+                canvas.lineTo(points[1].x,points[1].y);
+                canvas.stroke();
+            }
+        }
+        function mp(points) {
+            return {
+                x: (points[0].x+points[1].x)/2,
+                y: (points[0].y+points[1].y)/2
+            }
+        }
+        function drawLogo() {
+            var cvs = document.getElementById('cvam');
+            cvs.height=645;
+            cvs.width=645;
+            var ctx = cvs.getContext('2d');
+            var transX = cvs.width * 0.5, transY = 278;
+            ctx.translate(transX, transY);
+            var size = 220;
+            var palette = ["#FFFFFF","#78DDFB","#00BFF6","#009CF1","#0374C4","#1459A6","#000000"];
+            var pts = [{x:0, y:0}];
+            // Get a bunch of points to draw shape later
+            for (i=0;i<2;i++) {
+                for (j=0;j<6;j++) {
+                    pts.push(hc(pts[0],size*(i*0.454545454545+1)-(1-i)*15,j));
+                }
+            }
+            for (i=0;i<2;i++) {
+                for (j=0;j<6;j++) {
+                    pts.push(mp([pts[i*6+(j==0?6:j)],pts[i*6+j+1]]));
+                }
+            }
+            for (j=0;j<6;j++) {
+                pts.push(hc(pts[0],size*0.54545454,j));
+            }
+            
+            drawLine(ctx,[pts[0],pts[1]],palette[5],size*0.25);
+            var shape = [pts[25],pts[26],pts[27],pts[28],pts[29],pts[30]];
+            drawShapeRounded(ctx,shape,palette[5],15);
+
+            var shape = [pts[1],pts[2],pts[3],pts[4],pts[5],pts[6],pts[1],pts[7],pts[12],pts[11],pts[10],pts[9],pts[8],pts[7],pts[1]];
+            drawShape(ctx,shape,palette[0]);
+
+            var p = palette;
+            var p = [p[1],p[2],p[3],p[4],p[5],p[1],p[2],p[3],p[4],p[5],p[1],p[2],p[3],p[4],p[5],p[1],p[2],p[3],p[4],p[5],p[1],p[2],p[3],p[4]];
+            for (k=0;k<6;k++) {
+                var shape = [pts[1+k],pts[13+k],pts[19+k]];
+                drawShape(ctx,shape,p[4*k]);
+                var shape = [pts[1+k],pts[7+k],pts[19+k]];
+                drawShape(ctx,shape,p[4*k+1]);
+                var shape = [pts[1+k],pts[7+k],pts[20+(k==5?(-1):k)]];
+                drawShape(ctx,shape,p[4*k+2]);
+                var shape = [pts[1+k],pts[14+(k==5?(-1):k)],pts[20+(k==5?(-1):k)]];
+                drawShape(ctx,shape,p[4*k+3]);
+            }
+
+            // middle letter
+            ctx.fillStyle = palette[0];
+            ctx.font = "500 10em Verdana";
+            ctx.textAlign = "center";
+            ctx.fillText("\u03BB",0,55);
+
+            var div = document.getElementById('png');
+            var img = cvs.toDataURL("image/png");
+            div.innerHTML = div.innerHTML+'<img src="'+img+'"/>';
+        }
+    </script>
+</head>
+<body>
+    <h3>Canvas</h3>
+    <canvas id="cvam"></canvas>
+    <h3>Image png</h3>
+    <div id="png"></div>
+    <script>
+        drawLogo();
+    </script>
+</body>
+</html>
