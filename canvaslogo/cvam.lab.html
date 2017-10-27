@@ -35,11 +35,11 @@
             var centerY = cvs.height / 2 + 130*scale/2-1*scale;
             var ctx = cvs.getContext('2d');
 
-            ctx.strokeStyle = palette[1];
+            ctx.strokeStyle = palette[0];
 
-            var radhist = 265*scale;
+            var radhist = 270*scale;
 
-            var nbbar = 9;
+            var nbbar = 6;
             var spacingpct = 1/4;
             var barwidth = (radhist*2*(1-spacingpct))/nbbar;
             var bardist = (radhist*2-barwidth)/(nbbar-1);
@@ -49,29 +49,26 @@
             for (j=0;j<nbbar;j++) {
                 ctx.beginPath();
                 ctx.moveTo(centerX-radhist+barwidth/2+bardist*j,centerY+radhist);
-                ctx.lineTo(centerX-radhist+barwidth/2+bardist*j,centerY-nbbar*3/11*radhist*(erf(j+1,midbar/2,midbar/4)/1.5+erf(j+1,nbbar-midbar/2,midbar/4)));
+                ctx.lineTo(centerX-radhist+barwidth/2+bardist*j,centerY+radhist/3-nbbar*4/11*radhist*(erf(j+1,midbar/1.8,midbar/5)/1.75+erf(j+1,nbbar-midbar/2.7,midbar/4)));
                 ctx.stroke();
             }
 
-            var points = [{x:centerX-radhist*0.916*5-bardist,y:centerY+radhist*3/5}];
-            for (k=0;k<nbbar;k++) {
-                xpos = centerX-radhist*0.916+bardist*k;
-                //ypos = centerY-nbbar*3/11*radhist*(erf(nbbar-k+1,midbar/2,midbar/4)/1.5+erf(nbbar-k+1,nbbar-midbar/2,midbar/4))+radhist*4/5;
-                ypos = centerY+radhist*1.5/5+radhist/4*Math.sin((k-1)*1.5*Math.PI);
-                points.push({x:xpos,y:ypos});
-            }
-            points.push({x:centerX+radhist*0.916*5+bardist,y:centerY+radhist*3/5});
-
             ctx.globalCompositeOperation = "destination-out";
-
-            ctx.lineWidth = barwidth*1.8;
-            drawLineRounded(ctx,points,bardist*0.60);
+            ctx.beginPath();
+            ctx.moveTo(centerX-radhist*1.1,centerY+120*scale);
+            ctx.bezierCurveTo(centerX,centerY+260*scale,centerX,centerY-40*scale,centerX+radhist*1.1,centerY+120*scale);
+            ctx.lineTo(centerX+radhist,centerY+radhist);
+            ctx.lineTo(centerX-radhist,centerY+ radhist);
+            ctx.fill();
 
             ctx.globalCompositeOperation = "source-over";
-
-            ctx.lineWidth = barwidth*0.8;
-            ctx.strokeStyle = palette[0];
-            drawLineRounded(ctx,points,bardist*0.60);
+            ctx.fillStyle = palette[1];
+            ctx.beginPath();
+            ctx.moveTo(centerX-radhist*1.1,centerY+145*scale);
+            ctx.bezierCurveTo(centerX,centerY+285*scale,centerX,centerY-15*scale,centerX+radhist*1.1,centerY+145*scale);
+            ctx.lineTo(centerX+radhist,centerY+radhist);
+            ctx.lineTo(centerX-radhist,centerY+ radhist);
+            ctx.fill();
 
             ctx.globalCompositeOperation = "destination-out";
             ctx.lineWidth = radhist*2;
@@ -103,12 +100,12 @@
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.arc(centerX+Math.cos(Math.PI/36*52.7)*355*scale,centerY+Math.sin(Math.PI/36*52.7)*257*scale,55*scale,0,2*Math.PI,false);
+            ctx.arc(centerX+Math.cos(Math.PI/36*52.7)*355*scale,centerY+Math.sin(Math.PI/36*52.7)*217*scale,55*scale,0,2*Math.PI,false);
             ctx.fillStyle = palette[2];
             ctx.fill();
 
             ctx.beginPath();
-            ctx.arc(centerX+Math.cos(Math.PI/36*55.5)*430*scale,centerY+Math.sin(Math.PI/36*55.5)*372*scale,40*scale,0,2*Math.PI,false);
+            ctx.arc(centerX+Math.cos(Math.PI/36*55.5)*430*scale,centerY+Math.sin(Math.PI/36*55.5)*352*scale,40*scale,0,2*Math.PI,false);
             ctx.fillStyle = palette[3];
             ctx.fill();
 
@@ -117,16 +114,20 @@
             ctx.fillStyle = palette[4];
             ctx.fill();
 
-            var split = 2/10;
-            ctx.lineWidth = 25*scale;
+            var split = 2/16;
+            ctx.lineWidth = 12*scale;
             ctx.strokeStyle = palette[0];
-            for(i=2;i<8;i++) {
+            for(i=5;i<12;i++) {
                 ctx.beginPath();
                 ctx.moveTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
-                ctx.lineTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale-15*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
+                ctx.lineTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale-20*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
                 ctx.strokeStyle = palette[0];
                 ctx.stroke();
             }
+
+            //ctx.globalCompositeOperation = "destination-over";
+            //ctx.fillStyle = palette[5];
+            //ctx.fillRect(0,0,cvs.width,cvs.height);
 
             var div = document.getElementById(idpng);
             var img = cvs.toDataURL("image/png");
@@ -139,8 +140,8 @@
     <div id="png1" style="background-color: #CFD8DC;padding:10em;float:left"></div>
     <div id="png2" style="background-color: #212121;padding:10em;float:left"></div>
     <script>
-        drawLogo(["#212121","#1976D2","#C2185B","#303F9F","#FFC107"],"png1");
-        drawLogo(["#CFD8DC","#1976D2","#C2185B","#303F9F","#FFC107"],"png2");
+        drawLogo(["#212121","#1976D2","#C2185B","#303F9F","#FFC107","#CFD8DC"],"png1");
+        drawLogo(["#CFD8DC","#1976D2","#C2185B","#303F9F","#FFC107","#212121"],"png2");
     </script>
 </body>
 </html>
