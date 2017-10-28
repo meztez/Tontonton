@@ -37,7 +37,7 @@
 
             ctx.strokeStyle = palette[0];
 
-            var radhist = 270*scale;
+            var radhist = 280*scale;
 
             var nbbar = 6;
             var spacingpct = 1/4;
@@ -58,7 +58,7 @@
             ctx.moveTo(centerX-radhist*1.1,centerY+120*scale);
             ctx.bezierCurveTo(centerX,centerY+260*scale,centerX,centerY-40*scale,centerX+radhist*1.1,centerY+120*scale);
             ctx.lineTo(centerX+radhist,centerY+radhist);
-            ctx.lineTo(centerX-radhist,centerY+ radhist);
+            ctx.lineTo(centerX-radhist,centerY+radhist);
             ctx.fill();
 
             ctx.globalCompositeOperation = "source-over";
@@ -67,7 +67,7 @@
             ctx.moveTo(centerX-radhist*1.1,centerY+145*scale);
             ctx.bezierCurveTo(centerX,centerY+285*scale,centerX,centerY-15*scale,centerX+radhist*1.1,centerY+145*scale);
             ctx.lineTo(centerX+radhist,centerY+radhist);
-            ctx.lineTo(centerX-radhist,centerY+ radhist);
+            ctx.lineTo(centerX-radhist,centerY+radhist);
             ctx.fill();
 
             ctx.globalCompositeOperation = "destination-out";
@@ -78,7 +78,7 @@
 
             ctx.globalCompositeOperation = "source-over";
 
-            ctx.lineWidth = 100*scale;
+            ctx.lineWidth = 80*scale;
             ctx.lineCap = "round";
             ctx.strokeStyle = palette[0];
             ctx.fillStyle = palette[0];
@@ -100,17 +100,17 @@
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.arc(centerX+Math.cos(Math.PI/36*52.7)*355*scale,centerY+Math.sin(Math.PI/36*52.7)*217*scale,55*scale,0,2*Math.PI,false);
+            ctx.arc(centerX+Math.cos(Math.PI/36*52.7)*355*scale,centerY+Math.sin(Math.PI/36*52.7)*227*scale,55*scale,0,2*Math.PI,false);
             ctx.fillStyle = palette[2];
             ctx.fill();
 
             ctx.beginPath();
-            ctx.arc(centerX+Math.cos(Math.PI/36*55.5)*430*scale,centerY+Math.sin(Math.PI/36*55.5)*352*scale,40*scale,0,2*Math.PI,false);
+            ctx.arc(centerX+Math.cos(Math.PI/36*55.5)*430*scale,centerY+Math.sin(Math.PI/36*55.5)*357*scale,40*scale,0,2*Math.PI,false);
             ctx.fillStyle = palette[3];
             ctx.fill();
 
             ctx.beginPath();
-            ctx.arc(centerX+Math.cos(Math.PI/36*54)*498*scale,centerY+Math.sin(Math.PI/36*54)*480*scale,30*scale,0,2*Math.PI,false);
+            ctx.arc(centerX+Math.cos(Math.PI/36*53.8)*498*scale,centerY+Math.sin(Math.PI/36*54)*480*scale,30*scale,0,2*Math.PI,false);
             ctx.fillStyle = palette[4];
             ctx.fill();
 
@@ -120,7 +120,7 @@
             for(i=5;i<12;i++) {
                 ctx.beginPath();
                 ctx.moveTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
-                ctx.lineTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale-20*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
+                ctx.lineTo(centerX-Math.cos(Math.PI/36*36-Math.asin(-1+split*i))*310*scale-10*scale,centerY-Math.sin(Math.PI/36*36-Math.asin(-1+split*i))*310*scale);
                 ctx.strokeStyle = palette[0];
                 ctx.stroke();
             }
