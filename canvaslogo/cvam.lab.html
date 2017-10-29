@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Logo CVAM</title>
+    <link href="https://fonts.googleapis.com/css?family=Baloo|Fredoka+One|Varela+Round" rel="stylesheet"> 
     <script>
         function erf(x,mu,sigma) {
             return Math.exp(-Math.pow(x-mu,2)/2/Math.pow(sigma,2))/Math.sqrt(2*Math.PI*Math.pow(sigma,2));
@@ -125,9 +126,14 @@
                 ctx.stroke();
             }
 
-            //ctx.globalCompositeOperation = "destination-over";
-            //ctx.fillStyle = palette[5];
-            //ctx.fillRect(0,0,cvs.width,cvs.height);
+            //ctx.font = "900 15em Varela Round";
+            //ctx.textAlign = "left";
+            //ctx.fillStyle = palette[0];
+            //ctx.fillText("CVAM",0,0);
+
+            ctx.globalCompositeOperation = "destination-over";
+            ctx.fillStyle = palette[5];
+            ctx.fillRect(0,0,cvs.width,cvs.height);
 
             var div = document.getElementById(idpng);
             var img = cvs.toDataURL("image/png");
