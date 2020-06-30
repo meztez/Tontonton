@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Logo CVAM</title>
+   <!--  <link href="https://fonts.googleapis.com/css?family=Baloo|Fredoka+One|Varela+Round" rel="stylesheet">  -->
+    <script>
+        function erf(x,mu,sigma) {
+            return Math.exp(-Math.pow(x-mu,2)/2/Math.pow(sigma,2))/Math.sqrt(2*Math.PI*Math.pow(sigma,2));
+        }
+        function getPAD(pts1, pts2, r, fp) {
+            totalDistance = Math.sqrt(Math.pow((pts2.x - pts1.x), 2) + Math.pow((pts2.y - pts1.y), 2));
+            rap = fp ? r / totalDistance : (totalDistance - r) / totalDistance;
+            return {x:pts1.x+(rap*(pts2.x-pts1.x)),y:pts1.y+(rap*(pts2.y-pts1.y))};
+        }
+        function drawLineRounded(canvas, points, radius) {
+            canvas.beginPath();
+            canvas.moveTo(points[0].x,points[0].y);
+            for (i=1;(i+1)<points.length;i++) {
+                tpts = getPAD(points[i-1],points[i],radius,false);
+                canvas.lineTo(tpts.x,tpts.y);
+                tpts = getPAD(points[i],points[i+1],radius,true);
+                canvas.arcTo(points[i].x,points[i].y,tpts.x,tpts.y,radius);
+            }
+            canvas.lineTo(points[points.length-1].x,points[points.length-1].y)
+            canvas.stroke();
+        }
+        function drawLogo(palette,idpng) {
+            var cvs = document.getElementById('cvam');
+            var scale = 0.3;
+            cvs.height=(620+130)*scale;
+            cvs.width=752*scale;
+            var centerX = cvs.width / 2;
+            var centerY = cvs.height / 2;
+            var ctx = cvs.getContext('2d');
+
+            ctx.strokeStyle = palette[0];
+
+            var radhist = 280*scale;
+
+            var nbbar = 6;
+            var spacingpct = 1/4;
+            var barwidth = (radhist*2*(1-spacingpct))/nbbar;
+            var bardist = (radhist*2-barwidth)/(nbbar-1);
+            var midbar = (nbbar+1)/2;
+
+            ctx.lineWidth = barwidth;
+            for (j=0;j<nbbar;j++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX-radhist+barwidth/2+bardist*j,centerY+radhist);
+                ctx.lineTo(centerX-radhist+barwidth/2+bardist*j,-35*scale+centerY+radhist/3-nbbar*4/11*radhist*(erf(j+1,midbar/1.8,midbar/5)/1.75+erf(j+1,nbbar-midbar/2.7,midbar/4)));
+                ctx.stroke();
+            }
+
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.beginPath();
+            ctx.moveTo(centerX-radhist*1.1,centerY+65*scale);
+            ctx.bezierCurveTo(centerX,centerY+205*scale,centerX,centerY-95*scale,centerX+radhist*1.1,centerY+65*scale);
+            ctx.lineTo(centerX+radhist,centerY+radhist);
+            ctx.lineTo(centerX-radhist,centerY+radhist);
+            ctx.fill();
+
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillStyle = palette[1];
+            ctx.beginPath();
+            ctx.moveTo(centerX-radhist*1.1,centerY+90*scale);
+            ctx.bezierCurveTo(centerX,centerY+230*scale,centerX,centerY-70*scale,centerX+radhist*1.1,centerY+90*scale);
+            ctx.lineTo(centerX+radhist,centerY+radhist);
+            ctx.lineTo(centerX-radhist,centerY+radhist);
+            ctx.fill();
+
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.lineWidth = radhist*2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radhist*2, Math.PI/36*0, Math.PI/36*72,false);
+            ctx.stroke();        
+
+            ctx.globalCompositeOperation = "source-over";
+
+            ctx.lineWidth = 60*scale;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = palette[0];
+            ctx.fillStyle = palette[0];
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 340*scale, Math.PI, 4*Math.PI,false);
+            ctx.stroke();
+
+            ctx.globalCompositeOperation = "destination-over";
+            ctx.fillStyle = palette[2];
+            ctx.fillRect(0,0,cvs.width,cvs.height);
+
+            var div = document.getElementById(idpng);
+            var img = cvs.toDataURL("image/png");
+            div.innerHTML = div.innerHTML+'<img src="'+img+'"/>';
+        }
+    </script>
+</head>
+<body>
+    <canvas id="cvam" style="display:none"></canvas>
+    <div id="png0" style="background-color: #000000;padding:10em;float:left"></div>
+    <div id="png1" style="background-color: white;padding:10em;float:left"></div>
+    <div id="png2" style="background-color: #212121;padding:10em;float:left"></div>
+    <script>
+        drawLogo(["#FFFFFF","#00bbff"],"png0");
+        drawLogo(["#212121","#1976D2"],"png1");
+        drawLogo(["#CFD8DC","#1976D2","#212121"],"png2");
+    </script>
+</body>
+</html>
